@@ -1,24 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Sorteio de Nomes</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Sorteador de Nomes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-xl">
-        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Sorteador de Nomes 🎲</h1>
-        <form method="POST" class="space-y-4">
-            <textarea name="nomes" rows="6" placeholder="Digite um nome por linha..." class="w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
-            <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600 transition duration-300">Sortear</button>
-        </form>
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-xl">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Sorteador de Nomes 🎲</h1>
 
-        {% if resultado %}
-        <div class="mt-6 p-4 bg-green-100 text-green-700 rounded-xl text-center text-xl font-semibold">
-            Nome sorteado: <span class="font-bold">{{ resultado }}</span>
-        </div>
-        {% endif %}
-    </div>
+    <form id="form" class="space-y-4">
+      <textarea id="nomes" name="nomes" rows="6" placeholder="Digite um nome por linha..." class="w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
+      <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600 transition duration-300">Sortear</button>
+    </form>
+
+    <div id="resultado" class="mt-6 hidden text-center text-2xl font-bold text-red-600"></div>
+    <div id="animacao" class="mt-6 text-center text-lg font-medium text-gray-700 h-10"></div>
+
+    <!-- Som triste -->
+    <audio id="somTriste" src="https://www.myinstants.com/media/sounds/sad-violin.mp3"></audio>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const nomesInput = document.getElementById('nomes');
+    const animacaoDiv = document.getElementById('animacao');
+    const resultadoDiv = document.getElementById('resultado');
+    const somTriste = document.getElementById('somTriste');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nomes = nomesInput.value
+        .split('\n')
+        .map(n => n.trim())
+        .filter(n => n !== '');
+
+      if (nomes.length === 0) return;
+
+      resultadoDiv.classList.add('hidden');
+      animacaoDiv.innerText = 'Preparando o sorteio...';
+
+      let i = 0;
+      const intervalo = setInterval(() => {
+        animacaoDiv.innerText = nomes[i % nomes.length];
+        i++;
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(intervalo);
+        const sorteado = nomes[Math.floor(Math.random() * nomes.length)];
+        animacaoDiv.innerText = '';
+        resultadoDiv.innerText = `😢 Nome sorteado: ${sorteado}`;
+        resultadoDiv.classList.remove('hidden');
+        somTriste.play();
+      }, 4000);
+    });
+  </script>
 </body>
 </html>
 

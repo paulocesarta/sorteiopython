@@ -2,12 +2,12 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Sorteador de Nomes</title>
+  <title>Sorteio</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
   <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-xl">
-    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Sorteador de Nomes 🎲</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">🎲 Sorteador 🎲</h1>
 
     <form id="form" class="space-y-4">
       <textarea id="nomes" name="nomes" rows="6" placeholder="Digite um nome por linha..." class="w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"></textarea>
@@ -51,7 +51,7 @@
         clearInterval(intervalo);
         const sorteado = nomes[Math.floor(Math.random() * nomes.length)];
         animacaoDiv.innerText = '';
-        resultadoDiv.innerText = `😢 Nome sorteado: ${sorteado}`;
+        resultadoDiv.innerText = `😢${sorteado}😢`;
         resultadoDiv.classList.remove('hidden');
         somTriste.play();
       }, 4000);

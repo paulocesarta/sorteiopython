@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: sorteio-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sorteio
+  template:
+    metadata:
+      labels:
+        app: sorteio
+    spec:
+      containers:
+        - name: sorteio
+          image: 'paulotavares3/sorteio:03'
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 400m
+              memory: 32Mi
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%

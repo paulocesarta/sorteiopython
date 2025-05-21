@@ -1,31 +1,45 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: sorteio-app
+  name: sorteio
+  namespace: dis
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: sorteio
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
         app: sorteio
     spec:
       containers:
-        - name: sorteio
-          image: 'paulotavares3/sorteio:03'
+        - image: harbor-test.homologacao.tjrn.jus.br/sorteio/sorteio:04
+          imagePullPolicy: Always
+          name: sorteio
           ports:
-            - containerPort: 80
+            - containerPort: 8080
+              name: http
               protocol: TCP
           resources:
             limits:
-              cpu: 400m
-              memory: 32Mi
-          imagePullPolicy: IfNotPresent
+              cpu: 200m
+              memory: 64Mi
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - sed -i "s/PODNAME/$(hostname)/g" /app/templates/index.html
+      imagePullSecrets:
+        - name: harbor-regcred
+      dnsPolicy: ClusterFirst
       restartPolicy: Always
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
+      terminationGracePeriodSeconds: 30
+
